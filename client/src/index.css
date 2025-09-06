@@ -1,0 +1,78 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Base layout helpers */
+html, body, #root { height: 100%; }
+body { background: transparent; }
+
+/* Animated background using theme-driven colors */
+:root {
+  --g1: #ff9a9e;
+  --g2: #fad0c4;
+  --g3: #fbc2eb;
+}
+[data-theme="night"] {
+  --g1: #7f1d1d;
+  --g2: #1e3a8a;
+  --g3: #065f46;
+}
+[data-theme="corporate"] {
+  --g1: #ffecd2;
+  --g2: #fcb69f;
+  --g3: #a1c4fd;
+}
+
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at top left, var(--g1), transparent 60%),
+              radial-gradient(ellipse at bottom right, var(--g2), transparent 60%),
+              linear-gradient(120deg, var(--g1), var(--g2), var(--g3));
+  background-size: 300% 300%;
+  animation: moveGradient 16s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes moveGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container-page { @apply max-w-5xl mx-auto p-4 md:p-6; }
+.card-glass { @apply bg-base-100/70 backdrop-blur-lg border border-base-300/60 shadow-2xl rounded-2xl; }
+.btn-primary-gradient { @apply btn btn-primary; }
+
+/* Utility for number inputs without spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+/* Splash overlay */
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px);
+  z-index: 50;
+}
+.splash-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 1rem;
+  animation: splashFloat 1.2s ease-in-out infinite alternate;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.splash-ring {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 9999px;
+  border: 3px solid rgba(255,255,255,0.35);
+  border-top-color: transparent;
+  animation: splashSpin 1.2s linear infinite;
+}
+@keyframes splashFloat { from { transform: translateY(0) scale(0.98); } to { transform: translateY(-8px) scale(1); } }
+@keyframes splashSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
