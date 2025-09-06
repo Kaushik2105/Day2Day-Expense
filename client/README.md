@@ -1,69 +1,43 @@
-# React + TypeScript + Vite
+# Day2Day Expense (Monolith)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tech: Express + TypeORM (Postgres) + JWT + React (Vite + TS) + Tailwind + DaisyUI
 
-Currently, two official plugins are available:
+## Setup
+1. Create a `.env` in project root:
+```
+NODE_ENV=development
+PORT=5175
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=day2day_expense
+JWT_SECRET=change_this_secret
+JWT_EXPIRES_IN=7d
+```
+2. Ensure Postgres has `uuid-ossp` extension: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Dev
+- Backend dev: `npm run dev`
+- Client dev: `cd client && npm run dev` (served at http://localhost:5173, proxies /api to backend)
 
-## Expanding the ESLint configuration
+## Build & Start (Monolith)
+- `npm run build`
+- `npm start` (serves API and static client from `dist-client/`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Database
+- Run migrations (optional; schema auto-managed by TypeORM entities + migration included):
+```
+npm run typeorm -- migrate
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## API Overview
+- `POST /api/auth/register { email, password } -> { token }`
+- `POST /api/auth/login { email, password } -> { token }`
+- `GET /api/auth/me` (Bearer token)
+- `POST /api/salary { year, month, salary }`
+- `POST /api/expenses { year, month, category, amount, date, note? }`
+- `GET /api/expenses?year=YYYY&month=M`
+- `GET /api/months`
+- `GET /api/summary?year=YYYY&month=M`
+- `DELETE /api/expenses/:id`
